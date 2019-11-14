@@ -33,10 +33,12 @@ do
         --enable-all)
             REPL_FROM=false
             REPL_TO=true
+            REPL_ACTION=enabling
             ;;
         --disable-all)
             REPL_FROM=true
             REPL_TO=false
+            REPL_ACTION=disabling
             ;;
         *)
             usage
@@ -53,6 +55,6 @@ http --verify=no $HOST/api/v1.0/storage/replication/                            
         do
             export ID=`echo $task | cut -d, -f1`
             NAME=`echo $task | cut -d, -f2`
-            echo enabling $NAME
+            echo "$REPL_ACTION" $NAME
             set_repl $ID $REPL_TO
         done
