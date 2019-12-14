@@ -3,7 +3,7 @@
 
 export HOST=https://192.168.1.50
 
-PROG=`basename $0`
+PROG=$(basename "$0")
 usage() {
     echo "Usage: $PROG --enable-all | --disable-all"
     exit 0
@@ -12,7 +12,7 @@ usage() {
 set_repl() {
     ID=$1
     REPL_TO=$2
-    if http --check-status -pHBhb --verify=no --ignore-stdin PUT $HOST/api/v1.0/storage/replication/$ID/ repl_enabled=$REPL_TO
+    if http --check-status -pHBhb --verify=no --ignore-stdin PUT $HOST/api/v1.0/storage/replication/"$ID"/ repl_enabled="$REPL_TO"
     then
             echo 'OK!'
     else
@@ -51,10 +51,11 @@ test -n "$REPL_FROM" -a -n "$REPL_TO" || usage
 http --verify=no $HOST/api/v1.0/storage/replication/                                |
         jq "map(select(.repl_enabled==$REPL_FROM)) | .[] | .id,.repl_filesystem"    |
         paste -d, - -                                                               |
-        while read task
+        while read -r task
         do
-            export ID=`echo $task | cut -d, -f1`
-            NAME=`echo $task | cut -d, -f2`
-            echo "$REPL_ACTION" $NAME
-            set_repl $ID $REPL_TO
+            ID=$(echo "$task" | cut -d, -f1)
+            export ID
+            NAME=$(echo "$task" | cut -d, -f2)
+            echo "$REPL_ACTION" "$NAME"
+            set_repl "$ID" "$REPL_TO"
         done
