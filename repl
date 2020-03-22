@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-export HOST=https://192.168.1.50
+export HOST=https://192.168.1.10
 export OUTPUT_PARAM="--output=/dev/null"
 
 PROG=$(basename "$0")
@@ -13,7 +13,7 @@ usage() {
 set_repl() {
     ID=$1
     REPL_TO=$2
-    if echo http --check-status $OUTPUT_PARAM -pHBhb --verify=no --ignore-stdin PUT $HOST/api/v1.0/storage/replication/"$ID"/ repl_enabled="$REPL_TO"
+    if http --check-status $OUTPUT_PARAM -pHBhb --verify=no --ignore-stdin PUT $HOST/api/v1.0/storage/replication/"$ID"/ repl_enabled="$REPL_TO"
     then
             echo 'OK!'
     else
